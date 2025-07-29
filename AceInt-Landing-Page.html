@@ -1,0 +1,1489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AceInt - Master Your Interviews with AI</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #8b5cf6;
+            --accent: #06b6d4;
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --bg-tertiary: #f1f5f9;
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+            --gradient-primary: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            --gradient-accent: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-tertiary: #334155;
+            --text-primary: #f8fafc;
+            --text-secondary: #cbd5e1;
+            --text-muted: #94a3b8;
+            --border: #374151;
+            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.3);
+            --shadow-lg: 0 25px 50px -12px rgb(0 0 0 / 0.4);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: var(--bg-primary);
+            overflow-x: hidden;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        /* Navigation */
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            transition: all 0.3s ease;
+        }
+
+        [data-theme="dark"] .nav {
+            background: rgba(15, 23, 42, 0.8);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            padding: 0.5rem 0;
+        }
+
+        .nav-link:hover {
+            color: var(--primary);
+        }
+
+        /* Mobile Menu */
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 8px;
+            transition: background 0.3s ease;
+        }
+
+        .mobile-menu-btn:hover {
+            background: var(--bg-secondary);
+        }
+
+        .mobile-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: var(--bg-primary);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            flex-direction: column;
+            gap: 1rem;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .mobile-menu.active {
+            display: flex;
+        }
+
+        /* Dark Mode Toggle - FIXED STYLING */
+        .theme-toggle {
+            background: var(--bg-secondary);
+            border: 2px solid var(--border);
+            border-radius: 50px !important; /* Force rounded corners */
+            padding: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            position: relative;
+            margin-right: 1rem;
+            /* Ensure border-radius works */
+            overflow: visible;
+            -webkit-border-radius: 50px;
+            -moz-border-radius: 50px;
+        }
+
+        .theme-toggle:hover {
+            border-color: var(--primary);
+            transform: scale(1.1);
+            background: var(--primary);
+        }
+
+        .theme-toggle i {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            transition: all 0.3s ease;
+            position: absolute;
+        }
+
+        .theme-toggle:hover i {
+            color: white;
+        }
+
+        /* Theme icon visibility */
+        .theme-icon-moon {
+            opacity: 1;
+            transform: rotate(0deg);
+        }
+
+        .theme-icon-sun {
+            opacity: 0;
+            transform: rotate(180deg);
+        }
+
+        [data-theme="dark"] .theme-icon-moon {
+            opacity: 0;
+            transform: rotate(180deg);
+        }
+
+        [data-theme="dark"] .theme-icon-sun {
+            opacity: 1;
+            transform: rotate(0deg);
+        }
+
+        /* FIXED NAV CTA BUTTON */
+        .nav-cta {
+            background: var(--gradient-primary);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px !important; /* Force rounded corners */
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 2px 10px 0 rgba(99, 102, 241, 0.3);
+            position: relative;
+            overflow: hidden;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            /* Ensure border-radius works */
+            -webkit-border-radius: 50px;
+            -moz-border-radius: 50px;
+            /* Prevent any reset overrides */
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+        }
+
+        .nav-cta::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .nav-cta:hover::before {
+            left: 100%;
+        }
+
+        .nav-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px 0 rgba(99, 102, 241, 0.4);
+            background: linear-gradient(135deg, #5855eb 0%, #7c3aed 100%);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 2rem;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(99, 102, 241, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 80%, rgba(6, 182, 212, 0.1) 0%, transparent 50%);
+            transition: background 0.3s ease;
+        }
+
+        [data-theme="dark"] .hero {
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(99, 102, 241, 0.2) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.2) 0%, transparent 50%),
+                radial-gradient(circle at 40% 80%, rgba(6, 182, 212, 0.2) 0%, transparent 50%);
+        }
+
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .hero-title {
+            font-size: clamp(2.5rem, 8vw, 4rem);
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, var(--text-primary), var(--text-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+        }
+
+        .hero-description {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            margin-bottom: 3rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            animation: fadeInUp 0.8s ease-out 0.4s both;
+        }
+
+        .hero-cta {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            animation: fadeInUp 0.8s ease-out 0.6s both;
+        }
+
+        /* FIXED PRIMARY BUTTON */
+        .btn-primary {
+            background: var(--gradient-primary);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 50px !important; /* Force rounded corners */
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 14px 0 rgba(99, 102, 241, 0.3);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            min-height: 50px;
+            /* Ensure border-radius works */
+            -webkit-border-radius: 50px;
+            -moz-border-radius: 50px;
+            /* Prevent any reset overrides */
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            font-family: inherit;
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.6s;
+        }
+
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px 0 rgba(99, 102, 241, 0.4);
+            background: linear-gradient(135deg, #5855eb 0%, #7c3aed 100%);
+        }
+
+        .btn-primary:active {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 14px 0 rgba(99, 102, 241, 0.3);
+        }
+
+        /* FIXED SECONDARY BUTTON */
+        .btn-secondary {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            padding: 1rem 2rem;
+            border: 2px solid var(--border);
+            border-radius: 50px !important; /* Force rounded corners */
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            min-height: 50px;
+            box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.1);
+            /* Ensure border-radius works */
+            -webkit-border-radius: 50px;
+            -moz-border-radius: 50px;
+            /* Prevent any reset overrides */
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            font-family: inherit;
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--primary);
+            color: white;
+            background: var(--gradient-primary);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px 0 rgba(99, 102, 241, 0.25);
+        }
+
+        .btn-secondary:active {
+            transform: translateY(0);
+        }
+
+        /* Features Section */
+        .features {
+            padding: 8rem 2rem;
+            background: var(--bg-secondary);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-badge {
+            display: inline-block;
+            background: var(--gradient-primary);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .section-title {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .section-description {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 3rem;
+        }
+
+        .feature-card {
+            background: var(--bg-primary);
+            padding: 3rem;
+            border-radius: 24px;
+            border: 1px solid var(--border);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-primary);
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
+        }
+
+        .feature-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--gradient-primary);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .feature-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .feature-description {
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        /* Demo Section */
+        .demo {
+            padding: 8rem 2rem;
+            background: var(--bg-primary);
+        }
+
+        .demo-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .demo-content h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+        }
+
+        .demo-content p {
+            font-size: 1.125rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            line-height: 1.7;
+        }
+
+        .demo-mockup {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 2rem;
+            box-shadow: var(--shadow-lg);
+            position: relative;
+        }
+
+        .mockup-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .mockup-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .dot-red { background: #ef4444; }
+        .dot-yellow { background: #f59e0b; }
+        .dot-green { background: #22c55e; }
+
+        .mockup-content {
+            space-y: 1rem;
+        }
+
+        .message {
+            background: var(--bg-primary);
+            padding: 1rem 1.5rem;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            margin-bottom: 1rem;
+        }
+
+        .message.ai {
+            background: var(--gradient-primary);
+            color: white;
+            margin-left: 2rem;
+        }
+
+        /* CTA Section */
+        .cta {
+            padding: 8rem 2rem;
+            background: var(--text-primary);
+            color: white;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: background 0.3s ease;
+        }
+
+        [data-theme="dark"] .cta {
+            background: #000;
+        }
+
+        .cta::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 30% 20%, rgba(99, 102, 241, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 70% 80%, rgba(139, 92, 246, 0.3) 0%, transparent 50%);
+        }
+
+        [data-theme="dark"] .cta::before {
+            background: 
+                radial-gradient(circle at 30% 20%, rgba(99, 102, 241, 0.4) 0%, transparent 50%),
+                radial-gradient(circle at 70% 80%, rgba(139, 92, 246, 0.4) 0%, transparent 50%);
+        }
+
+        .cta-content {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .cta h2 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+        }
+
+        .cta p {
+            font-size: 1.25rem;
+            margin-bottom: 3rem;
+            opacity: 0.9;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        /* FIXED WHITE BUTTON */
+        .btn-white {
+            background: white;
+            color: var(--text-primary);
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 50px !important; /* Force rounded corners */
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            min-height: 50px;
+            box-shadow: 0 4px 20px 0 rgba(255, 255, 255, 0.3);
+            /* Ensure border-radius works */
+            -webkit-border-radius: 50px;
+            -moz-border-radius: 50px;
+            /* Prevent any reset overrides */
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            font-family: inherit;
+        }
+
+        .btn-white::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.1), transparent);
+            transition: left 0.6s;
+        }
+
+        .btn-white:hover::before {
+            left: 100%;
+        }
+
+        .btn-white:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px 0 rgba(255, 255, 255, 0.4);
+            background: #f8fafc;
+        }
+
+        .btn-white:active {
+            transform: translateY(-1px);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .floating {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-container {
+                padding: 1rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .feature-card {
+                padding: 2rem;
+            }
+
+            .demo-container {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .hero-cta, .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn-primary, .btn-secondary, .btn-white {
+                width: 100%;
+                max-width: 300px;
+                justify-content: center;
+            }
+
+            .cta h2 {
+                font-size: 2rem;
+            }
+
+            .demo-content h2 {
+                font-size: 2rem;
+            }
+        }
+
+        /* Scroll animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Loading state */
+        .loading {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+
+        .loading .fa-spinner {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Focus styles for accessibility */
+        .btn-primary:focus,
+        .btn-secondary:focus,
+        .btn-white:focus,
+        .nav-cta:focus,
+        .theme-toggle:focus,
+        .mobile-menu-btn:focus {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
+        }
+
+        .nav-link:focus {
+            outline: 2px solid var(--primary);
+            outline-offset: 4px;
+            border-radius: 4px;
+        }
+
+        /* Reduced motion for accessibility */
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+            
+            .floating {
+                animation: none;
+            }
+        }
+
+        /* Additional fixes for button rendering */
+        button {
+            /* Ensure all buttons inherit border-radius */
+            border-radius: inherit;
+            /* Reset any default button styles that might interfere */
+            outline: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+        }
+
+        /* Force border-radius on all button classes */
+        .btn-primary,
+        .btn-secondary,
+        .btn-white,
+        .nav-cta,
+        .theme-toggle {
+            border-radius: 50px !important;
+            -webkit-border-radius: 50px !important;
+            -moz-border-radius: 50px !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-container">
+            <a href="#" class="logo" aria-label="AceInt Home">
+                <i class="fas fa-graduation-cap"></i>
+                AceInt
+            </a>
+            <div class="nav-links">
+                <a href="#features" class="nav-link">Features</a>
+                <a href="#demo" class="nav-link">Demo</a>
+                <a href="#cta" class="nav-link">Pricing</a>
+                <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode" type="button">
+                    <i class="fas fa-moon theme-icon-moon"></i>
+                    <i class="fas fa-sun theme-icon-sun"></i>
+                </button>
+                <button class="nav-cta" type="button">Get Started</button>
+            </div>
+            <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle mobile menu" type="button">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+        <div class="mobile-menu" id="mobileMenu">
+            <a href="#features" class="nav-link">Features</a>
+            <a href="#demo" class="nav-link">Demo</a>
+            <a href="#cta" class="nav-link">Pricing</a>
+            <button class="theme-toggle" aria-label="Toggle dark mode" type="button">
+                <i class="fas fa-moon theme-icon-moon"></i>
+                <i class="fas fa-sun theme-icon-sun"></i>
+            </button>
+            <button class="nav-cta" type="button">Get Started</button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <div class="hero-badge">
+                <i class="fas fa-sparkles"></i>
+                Powered by Advanced AI Technology
+            </div>
+            <h1 class="hero-title">Master Your Interviews with AI</h1>
+            <p class="hero-description">
+                Practice with our AI interviewer, get personalized feedback, and land your dream job. 
+                Tailored for top companies like Google, Microsoft, and Meta.
+            </p>
+            <div class="hero-cta">
+                <button class="btn-primary" type="button">
+                    Start Practicing Free
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+                <button class="btn-secondary" type="button">
+                    <i class="fas fa-play"></i>
+                    Watch Demo
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <div class="container">
+            <div class="section-header fade-in">
+                <div class="section-badge">Features</div>
+                <h2 class="section-title">Everything you need to succeed</h2>
+                <p class="section-description">
+                    Our AI-powered platform provides comprehensive interview preparation 
+                    tailored to your specific role and target companies.
+                </p>
+            </div>
+            
+            <div class="features-grid">
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h3 class="feature-title">AI-Powered Practice</h3>
+                    <p class="feature-description">
+                        Our advanced AI conducts realistic interviews, adapting questions based on 
+                        your resume, target role, and company preferences for maximum relevance.
+                    </p>
+                </div>
+
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3 class="feature-title">Real-time Feedback</h3>
+                    <p class="feature-description">
+                        Get instant, detailed feedback on your responses, communication skills, 
+                        and technical knowledge with actionable improvement suggestions.
+                    </p>
+                </div>
+
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">
+                        <i class="fas fa-building"></i>
+                    </div>
+                    <h3 class="feature-title">Company-Specific Prep</h3>
+                    <p class="feature-description">
+                        Practice with questions and scenarios specific to your target companies, 
+                        including culture fit and role-specific technical challenges.
+                    </p>
+                </div>
+
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <h3 class="feature-title">Technical Interviews</h3>
+                    <p class="feature-description">
+                        Master coding interviews with our integrated IDE, algorithm challenges, 
+                        and system design practice for technical roles.
+                    </p>
+                </div>
+
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3 class="feature-title">Behavioral Questions</h3>
+                    <p class="feature-description">
+                        Practice STAR method responses, leadership scenarios, and soft skills 
+                        evaluation with our comprehensive behavioral question database.
+                    </p>
+                </div>
+
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                    <h3 class="feature-title">Performance Analytics</h3>
+                    <p class="feature-description">
+                        Track your progress with detailed analytics, skill assessments, 
+                        and personalized learning paths to optimize your preparation.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Demo Section -->
+    <section class="demo" id="demo">
+        <div class="demo-container">
+            <div class="demo-content fade-in">
+                <h2>Experience the Future of Interview Prep</h2>
+                <p>
+                    Our AI interviewer adapts to your responses in real-time, creating 
+                    a natural conversation flow while providing comprehensive evaluation 
+                    of your technical and soft skills.
+                </p>
+                <button class="btn-primary" type="button">
+                    Try Interactive Demo
+                    <i class="fas fa-external-link-alt"></i>
+                </button>
+            </div>
+            
+            <div class="demo-mockup fade-in floating">
+                <div class="mockup-header">
+                    <div class="mockup-dot dot-red"></div>
+                    <div class="mockup-dot dot-yellow"></div>
+                    <div class="mockup-dot dot-green"></div>
+                </div>
+                <div class="mockup-content">
+                    <div class="message">
+                        <strong>You:</strong> I'm preparing for a software engineering role at Google.
+                    </div>
+                    <div class="message ai">
+                        <strong>AI Interviewer:</strong> Great! Let's start with a system design question. 
+                        How would you design a URL shortening service like bit.ly?
+                    </div>
+                    <div class="message">
+                        <strong>You:</strong> I would start by understanding the requirements...
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta" id="cta">
+        <div class="cta-content">
+            <h2>Ready to ace your next interview?</h2>
+            <p>
+                Join thousands of successful candidates who've used AceInt to land 
+                their dream jobs at top tech companies.
+            </p>
+            <div class="cta-buttons">
+                <button class="btn-white" type="button">
+                    Start Free Trial
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+                <button class="btn-secondary" type="button">
+                    <i class="fas fa-calendar"></i>
+                    Schedule Demo
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // State management
+        const state = {
+            theme: 'light',
+            mobileMenuOpen: false
+        };
+        
+        // Initialize theme safely
+        function initTheme() {
+            try {
+                // Check if localStorage is available
+                if (typeof Storage !== 'undefined' && window.localStorage) {
+                    const saved = localStorage.getItem('aceint-theme');
+                    state.theme = saved || 'light';
+                } else {
+                    state.theme = 'light';
+                }
+            } catch (e) {
+                console.warn('localStorage not available, using default theme');
+                state.theme = 'light';
+            }
+            
+            applyTheme(state.theme);
+        }
+
+        // Apply theme to document
+        function applyTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            updateNavBackground();
+        }
+
+        // Save theme safely
+        function saveTheme(theme) {
+            try {
+                if (typeof Storage !== 'undefined' && window.localStorage) {
+                    localStorage.setItem('aceint-theme', theme);
+                }
+            } catch (e) {
+                console.warn('Could not save theme preference');
+            }
+        }
+
+        // Smooth scrolling for anchor links
+        function setupSmoothScrolling() {
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    const target = document.querySelector(targetId);
+                    
+                    if (target) {
+                        const navHeight = document.querySelector('.nav').offsetHeight;
+                        const targetPosition = target.offsetTop - navHeight;
+                        
+                        window.scrollTo({
+                            top: targetPosition,
+                            behavior: 'smooth'
+                        });
+                        
+                        // Close mobile menu if open
+                        closeMobileMenu();
+                    }
+                });
+            });
+        }
+
+        // Intersection Observer for fade-in animations
+        function setupScrollAnimations() {
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, observerOptions);
+
+            // Observe all fade-in elements
+            document.querySelectorAll('.fade-in').forEach(el => {
+                observer.observe(el);
+            });
+        }
+
+        // Update navbar background based on scroll and theme
+        function updateNavBackground() {
+            const nav = document.querySelector('.nav');
+            const isDark = state.theme === 'dark';
+            const scrolled = window.scrollY > 50;
+            
+            if (scrolled) {
+                nav.style.background = isDark ? 'rgba(15, 23, 42, 0.95)' : 'rgba(255, 255, 255, 0.95)';
+                nav.style.backdropFilter = 'blur(20px)';
+            } else {
+                nav.style.background = isDark ? 'rgba(15, 23, 42, 0.8)' : 'rgba(255, 255, 255, 0.8)';
+                nav.style.backdropFilter = 'blur(20px)';
+            }
+        }
+
+        // Navbar scroll effect
+        function setupNavbarScroll() {
+            let ticking = false;
+            
+            function updateNav() {
+                updateNavBackground();
+                ticking = false;
+            }
+            
+            window.addEventListener('scroll', () => {
+                if (!ticking) {
+                    requestAnimationFrame(updateNav);
+                    ticking = true;
+                }
+            });
+        }
+
+        // Dark mode toggle functionality
+        function setupThemeToggle() {
+            const themeToggles = document.querySelectorAll('.theme-toggle');
+            
+            themeToggles.forEach(toggle => {
+                toggle.addEventListener('click', () => {
+                    state.theme = state.theme === 'dark' ? 'light' : 'dark';
+                    applyTheme(state.theme);
+                    saveTheme(state.theme);
+                    
+                    // Add a small animation feedback
+                    toggle.style.transform = 'scale(0.9)';
+                    setTimeout(() => {
+                        toggle.style.transform = '';
+                    }, 150);
+                });
+            });
+        }
+
+        // Mobile menu functionality
+        function setupMobileMenu() {
+            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+            const mobileMenu = document.getElementById('mobileMenu');
+            
+            if (mobileMenuBtn && mobileMenu) {
+                mobileMenuBtn.addEventListener('click', () => {
+                    state.mobileMenuOpen = !state.mobileMenuOpen;
+                    
+                    if (state.mobileMenuOpen) {
+                        openMobileMenu();
+                    } else {
+                        closeMobileMenu();
+                    }
+                });
+            }
+        }
+
+        function openMobileMenu() {
+            const mobileMenu = document.getElementById('mobileMenu');
+            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+            
+            if (mobileMenu && mobileMenuBtn) {
+                mobileMenu.classList.add('active');
+                const icon = mobileMenuBtn.querySelector('i');
+                icon.className = 'fas fa-times';
+                
+                // Prevent body scroll when menu is open
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        function closeMobileMenu() {
+            const mobileMenu = document.getElementById('mobileMenu');
+            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+            
+            if (mobileMenu && mobileMenuBtn) {
+                mobileMenu.classList.remove('active');
+                const icon = mobileMenuBtn.querySelector('i');
+                icon.className = 'fas fa-bars';
+                state.mobileMenuOpen = false;
+                
+                // Restore body scroll
+                document.body.style.overflow = '';
+            }
+        }
+
+        // Button click handlers with improved loading states
+        function setupButtonHandlers() {
+            const buttons = document.querySelectorAll('.btn-primary, .btn-secondary, .btn-white, .nav-cta');
+            
+            buttons.forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Don't handle if already loading
+                    if (this.classList.contains('loading')) return;
+                    
+                    // Add loading state
+                    const originalHTML = this.innerHTML;
+                    this.classList.add('loading');
+                    this.disabled = true;
+                    this.setAttribute('aria-busy', 'true');
+                    
+                    // Update button content based on type
+                    const buttonText = this.textContent.toLowerCase();
+                    if (buttonText.includes('demo')) {
+                        this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading Demo...';
+                    } else if (buttonText.includes('trial') || buttonText.includes('started')) {
+                        this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Setting up...';
+                    } else if (buttonText.includes('schedule')) {
+                        this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Opening Calendar...';
+                    } else {
+                        this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
+                    }
+                    
+                    // Simulate loading
+                    setTimeout(() => {
+                        this.classList.remove('loading');
+                        this.disabled = false;
+                        this.removeAttribute('aria-busy');
+                        this.innerHTML = originalHTML;
+                        
+                        // Show appropriate message
+                        showNotification(getButtonMessage(buttonText));
+                    }, 1500);
+                });
+            });
+        }
+
+        // Get appropriate message based on button type
+        function getButtonMessage(buttonText) {
+            if (buttonText.includes('demo')) {
+                return { type: 'info', message: '🎬 Demo functionality would show interactive demo here!' };
+            } else if (buttonText.includes('trial') || buttonText.includes('started')) {
+                return { type: 'success', message: '🚀 Sign-up functionality would redirect to registration!' };
+            } else if (buttonText.includes('schedule')) {
+                return { type: 'info', message: '📅 Booking functionality would open calendar widget!' };
+            } else {
+                return { type: 'info', message: '✨ Feature coming soon!' };
+            }
+        }
+
+        // Show notification system
+        function showNotification(notification) {
+            // Create notification element
+            const notif = document.createElement('div');
+            notif.className = `notification notification-${notification.type}`;
+            notif.innerHTML = `
+                <div class="notification-content">
+                    <span>${notification.message}</span>
+                    <button class="notification-close" aria-label="Close notification">×</button>
+                </div>
+            `;
+            
+            // Add styles
+            notif.style.cssText = `
+                position: fixed;
+                top: 100px;
+                right: 20px;
+                background: var(--bg-primary);
+                border: 1px solid var(--border);
+                border-radius: 12px;
+                padding: 1rem;
+                box-shadow: var(--shadow-lg);
+                z-index: 10000;
+                transform: translateX(100%);
+                transition: transform 0.3s ease;
+                max-width: 400px;
+                word-wrap: break-word;
+            `;
+            
+            // Add to DOM
+            document.body.appendChild(notif);
+            
+            // Animate in
+            setTimeout(() => {
+                notif.style.transform = 'translateX(0)';
+            }, 100);
+            
+            // Set up close button
+            const closeBtn = notif.querySelector('.notification-close');
+            closeBtn.addEventListener('click', () => removeNotification(notif));
+            
+            // Auto remove after 5 seconds
+            setTimeout(() => removeNotification(notif), 5000);
+        }
+
+        function removeNotification(notif) {
+            notif.style.transform = 'translateX(100%)';
+            setTimeout(() => {
+                if (notif.parentNode) {
+                    notif.parentNode.removeChild(notif);
+                }
+            }, 300);
+        }
+
+        // Close mobile menu when clicking outside
+        function setupOutsideClickHandler() {
+            document.addEventListener('click', (e) => {
+                const mobileMenu = document.getElementById('mobileMenu');
+                const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+                
+                if (mobileMenu && mobileMenuBtn && 
+                    state.mobileMenuOpen &&
+                    !mobileMenu.contains(e.target) && 
+                    !mobileMenuBtn.contains(e.target)) {
+                    closeMobileMenu();
+                }
+            });
+        }
+
+        // Enhanced keyboard navigation
+        function setupKeyboardHandlers() {
+            document.addEventListener('keydown', (e) => {
+                // Close mobile menu with Escape key
+                if (e.key === 'Escape' && state.mobileMenuOpen) {
+                    closeMobileMenu();
+                }
+                
+                // Theme toggle with Ctrl/Cmd + Shift + T
+                if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'T') {
+                    e.preventDefault();
+                    document.getElementById('themeToggle').click();
+                }
+                
+                // Focus management for mobile menu
+                if (state.mobileMenuOpen && e.key === 'Tab') {
+                    const mobileMenu = document.getElementById('mobileMenu');
+                    const focusableElements = mobileMenu.querySelectorAll(
+                        'a, button, [tabindex]:not([tabindex="-1"])'
+                    );
+                    const firstElement = focusableElements[0];
+                    const lastElement = focusableElements[focusableElements.length - 1];
+                    
+                    if (e.shiftKey && document.activeElement === firstElement) {
+                        e.preventDefault();
+                        lastElement.focus();
+                    } else if (!e.shiftKey && document.activeElement === lastElement) {
+                        e.preventDefault();
+                        firstElement.focus();
+                    }
+                }
+            });
+        }
+
+        // Performance optimization
+        function optimizeForDevice() {
+            const isSlowDevice = navigator.hardwareConcurrency < 4 || 
+                               /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            
+            if (isSlowDevice) {
+                // Reduce animation duration on slower devices
+                document.documentElement.style.setProperty('--animation-duration', '0.3s');
+                
+                // Disable floating animation on mobile/slow devices
+                document.querySelectorAll('.floating').forEach(el => {
+                    el.style.animation = 'none';
+                });
+            }
+        }
+
+        // Handle page visibility changes
+        function setupVisibilityHandler() {
+            document.addEventListener('visibilitychange', () => {
+                const floatingElements = document.querySelectorAll('.floating');
+                
+                if (document.hidden) {
+                    floatingElements.forEach(el => {
+                        el.style.animationPlayState = 'paused';
+                    });
+                } else {
+                    floatingElements.forEach(el => {
+                        el.style.animationPlayState = 'running';
+                    });
+                }
+            });
+        }
+
+        // Error handling
+        function setupErrorHandling() {
+            window.addEventListener('error', (e) => {
+                console.error('AceInt: An error occurred:', e.error);
+                // In production, you might want to send this to an analytics service
+            });
+            
+            window.addEventListener('unhandledrejection', (e) => {
+                console.error('AceInt: Unhandled promise rejection:', e.reason);
+            });
+        }
+
+        // Initialize everything when DOM is loaded
+        function init() {
+            initTheme();
+            setupSmoothScrolling();
+            setupScrollAnimations();
+            setupNavbarScroll();
+            setupThemeToggle();
+            setupMobileMenu();
+            setupButtonHandlers();
+            setupOutsideClickHandler();
+            setupKeyboardHandlers();
+            setupVisibilityHandler();
+            setupErrorHandling();
+            optimizeForDevice();
+            
+            // Add loading complete class
+            setTimeout(() => {
+                document.body.classList.add('loaded');
+            }, 100);
+        }
+
+        // Start when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+
+        // Export functions for potential external use
+        window.AceInt = {
+            toggleTheme: () => document.getElementById('themeToggle').click(),
+            closeMobileMenu,
+            showNotification
+        };
+    </script>
+</body>
+</html>
